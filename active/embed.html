@@ -57,8 +57,17 @@
     const container = document.getElementById('form-container');
 
     async function loadFromHash() {
-      const url = decodeURIComponent(location.hash.slice(1));
+      let url = decodeURIComponent(location.hash.slice(1));
       if (!url) return;
+
+      // Simple check to ensure it's a valid URL
+      try {
+        new URL(url);
+      } catch (_) {
+        alert("Invalid URL");
+        return;
+      }
+
 
       container.style.display = 'none';
       logo.style.display = 'block';
@@ -71,7 +80,9 @@
 
     input.addEventListener('keypress', e => {
       if (e.key === 'Enter') {
-        location.hash = input.value;
+        if (input.value) {
+          location.hash = input.value;
+        }
         loadFromHash();
       }
     });
