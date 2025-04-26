@@ -21,15 +21,15 @@
         let originalUrl = "https://rhw.one";
         let encodedUrl = Ultraviolet.codec.xor.encode(originalUrl);
         let encodedUrlWithPrefix = `${self.__uv$config.prefix}${encodedUrl}`;
-        console.log("Encoded URL:", encodedUrlWithPrefix);
+        alert("Encoded URL:", encodedUrlWithPrefix);
         document.getElementById("encodedIframe").src = encodedUrlWithPrefix;
 
 // for background processing
         try {
             await registerSW();
-            console.log("Service Worker registered successfully.");
+            alert("Service Worker registered successfully.");
         } catch (err) {
-            console.error("Failed to register service worker:", err);
+            alert("Failed to register service worker:", err);
         }
     </script>
 
