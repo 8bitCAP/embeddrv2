@@ -4,40 +4,43 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Embed</title>
- <script src="/active/uv/uv.bundle.js"></script>
-<script src="/active/uv/uv.config.js"></script>
-<script src="/active/uv/uv.sw.js"></script>
-<script src="/active/uv/uv.client.js"></script>
-<script src="/active/uv/uv.handler.js"></script>
+    <script>
+        window.__uv$config = {
+            prefix: '/active/uv/service/',
+            bare: '/bare/',      
+            encodeUrl: function (url) {
+                return new URL(url, location.origin).toString().replace(/^https?:\/\//, '');
+            }
+        };
+    </script>
+    <script src="/active/uv/uv.bundle.js"></script>
+    <script src="/active/uv/uv.sw.js"></script>
+    <script src="/active/uv/uv.client.js"></script>
+    <script src="/active/uv/uv.handler.js"></script>
 </head>
 <body>
     <iframe id="encodedIframe" width="100%" height="100%"></iframe>
 
     <script>
         window.addEventListener("DOMContentLoaded", () => {
-            //test url for now
             const originalUrl = "https://rhw.one";
 
             if (window.__uv$config?.prefix && window.__uv$config?.encodeUrl) {
                 const encodedUrl = __uv$config.prefix + __uv$config.encodeUrl(originalUrl);
-                alert("Encoded URL: " + encodedUrl);
+                console.log("Encoded URL: " + encodedUrl);
                 document.getElementById("encodedIframe").src = encodedUrl;
             } else {
-                console.error("Ultraviolet config not loaded properly.");
+                console.error("Ultaviolet config not loaded proprly.");
             }
 
             if (typeof registerSW === "function") {
                 registerSW().then(() => {
-                    alert("Service Worker registered.");
+                    console.log("Service Worker registreed.");
                 }).catch(err => {
-                    alert("SW registration failed: " + err);
+                    console.error("SW registration failed:", err);
                 });
             }
         });
-        
     </script>
-<script>
-    console.log("UV Config:", window.__uv$config);
-</script>
 </body>
 </html>
