@@ -14,43 +14,48 @@
     <iframe id="encodedIframe" width="100%" height="100%"></iframe>
     <div id="errorMessage" style="color: red;"></div>
     <script>
-        window.addEventListener("DOMContentLoaded", () => {
+window.addEventListener("DOMContentLoaded", () => {
 
-            const urlWithHash = window.location.hash.substring(1); // get the hash
+            const checkUVLoaded = setInterval(() => {
+                if (window.__uv$config?.prefix && window.__uv$config?.encodeUrl) {
+                    clearInterval(checkUVLoaded); 
+                    processURL();
+                }
+            }, 100); 
 
-            if (!urlWithHash) {
-                document.getElementById("errorMessage").innerText = "No URL hash provided.";
-                console.error("No URL hash provided.");
-                return;
-            }
+            function processURL() {
+                const urlWithHash = window.location.hash.substring(1); 
 
-            try {
-                const originalUrl = new URL(urlWithHash);
-                
-                if (originalUrl.protocol !== "http:" && originalUrl.protocol !== "https:") {
-                    throw new Error("Invalid URL protocol. Must be http or https.");
+                if (!urlWithHash) {
+                    document.getElementById("errorMessage").innerText = "No URL hash provided.";
+                    console.error("No URL hash provided.");
+                    return;
                 }
 
-                if (window.__uv$config?.prefix && window.__uv$config?.encodeUrl) {
+                try {
+
+                    const originalUrl = new URL(urlWithHash);
+
+                    if (originalUrl.protocol !== "http:" && originalUrl.protocol !== "https:") {
+                        throw new Error("Invalid URL protocol. Must be http or https.");
+                    }
+
                     const encodedUrl = __uv$config.prefix + __uv$config.encodeUrl(originalUrl.toString());
                     console.log("Encoded URL: " + encodedUrl);
 
                     document.getElementById("encodedIframe").src = encodedUrl;
-                } else {
-                    throw new Error("Ultraviolet config not loaded properly.");
+                } catch (error) {
+                    document.getElementById("errorMessage").innerText = "Error: " + error.message;
+                    console.error("Error:", error);
                 }
 
-            } catch (error) {
-                document.getElementById("errorMessage").innerText = "Error: " + error.message;
-                console.error("Error:", error);
-            }
-
-            if (typeof registerSW === "function") {
-                registerSW().then(() => {
-                    console.log("Service Worker registered.");
-                }).catch(err => {
-                    console.error("SW registration failed:", err);
-                });
+                if (typeof registerSW === "function") {
+                    registerSW().then(() => {
+                        console.log("Service Worker registered.");
+                    }).catch(err => {
+                        console.error("SW registration failed:", err);
+                    });
+                }
             }
         });
     </script>
