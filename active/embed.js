@@ -1,20 +1,15 @@
-"use strict";
-let destination = "";
+import { registerSW } from './scripts/prxy.mjs';
+import { encodeUrl } from './uv/uv.bundle.js';
+import { uvConfig } from './uv/uv.config.js';
 
-try {
-  destination = new URL(location.hash.slice(1)).toString();
-} catch (err) {
-  alert(`Your boat crashed!\nBad string or URL:\n${err}`);
-  throw err;
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const iframe = document.getElementById('proxyFrame');
+    const url = window.location.hash.substring(1); // Get URL from hash
 
-registerSW()
-  .then(() => {
-    window.open(
-      __uv$config.prefix + __uv$config.encodeUrl(destination),
-      "_self"
-    );
-  })
-  .catch((err) => {
-    alert(`Your boat crashed!\nAn error occured:\n${err}`);
-  });
+    if (url) {
+        const encodedUrl = encodeUrl(url);
+        iframe.src = uvConfig.prefix + encodedUrl;
+    }
+
+    registerSW();
+});
