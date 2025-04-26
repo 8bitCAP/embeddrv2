@@ -11,5 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         iframe.src = uvConfig.prefix + encodedUrl;
     }
 
-    registerSW();
+    registerSW()
+    .then(() => console.log('Service worker registered'))
+    .catch((error) => console.error('Service worker registration failed:', error));
 });
